@@ -2,7 +2,7 @@ import { useMutation } from "@tanstack/react-query";
 import { editProfile } from "./action";
 import { CiEdit } from "react-icons/ci";
 import ProfileInput from "../../components/ProfileInput";
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
 
 interface Payload {
   full_name: string;
@@ -39,7 +39,7 @@ export default function Profile() {
     }));
   };
 
-  const editProfileMutation = useMutation<EditProfileResponse>({
+  const editProfileMutation = useMutation<EditProfileResponse, Error, Payload>({
     mutationFn: editProfile,
     onSuccess: (data) => {
       if (data?.status === "error") {
@@ -49,6 +49,8 @@ export default function Profile() {
       }
     },
   });
+
+  console.log(errorMessage)
 
   const handleEditProfile = () => {
     editProfileMutation.mutate(payload);

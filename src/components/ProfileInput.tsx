@@ -1,12 +1,12 @@
 import React from "react";
 
 interface InputProps {
-  label: string;
-  placeholder: string;
-  type: string;
-  value: string;
-  name: string;
-  handleChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  label?: string;
+  placeholder?: string;
+  type?: string;
+  value?: string;
+  name?: string;
+  handleChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 export default function ProfileInput({

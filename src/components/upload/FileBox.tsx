@@ -9,13 +9,11 @@ interface ImageBoxProps {
   name: string;
   active: object;
   handleSelectFile: () => void;
-  handleEditFile: () => void;
+  handleEditFile?: () => void;
   selected?: boolean
 }
 
 export default function ImageBox({
-  active,
-  id,
   imageUrl,
   name,
   handleSelectFile,

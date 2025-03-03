@@ -1,4 +1,4 @@
-export const setUserSession = (user, token) => {
+export const setUserSession = (user: unknown, token: string) => {
   if (user && token) {
     localStorage.setItem("user", JSON.stringify(user));
     localStorage.setItem("token", token);

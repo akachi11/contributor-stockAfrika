@@ -1,10 +1,16 @@
 /**
- * Returns an appropriate error message based on the provided error object.
- * @param {Error} error - The error object containing details about the encountered error.
+ * Returns an appropriate error message based on the provided error object. 
  * @returns {string} An error message corresponding to the type of error encountered.
  */
-export const returnErrorMessage = (error) => {
-  let errorStatus = error?.response?.status;
+
+export interface Error {
+  response: {status: number, data: string},
+  message: string
+
+}
+
+export const returnErrorMessage = (error: Error) => {
+  const errorStatus = error?.response?.status;
   if (error.message == 'Network error') {
     return 'It looks like you are offline..., pls check your internet connection';
   } else if (errorStatus >= 400 && errorStatus <= 500) {

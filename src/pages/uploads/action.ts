@@ -1,8 +1,7 @@
 import axios from "axios";
 import { getToken } from "../../services/AuthServices";
 import { Stock } from "../../types";
-
-const BASE_URL = import.meta.env.VITE_BASE_URL;
+import { baseAPI } from "../../utils/apiUrls";
 
 export const saveDraft = async (data: Stock) => {
   try {
@@ -29,7 +28,7 @@ export const saveDraft = async (data: Stock) => {
       formData.append("keywords", keyword);  
     });
 
-    const response = await axios.post(`${BASE_URL}/contributor/draft/`, formData, {
+    const response = await axios.post(`${baseAPI}/contributor/draft/`, formData, {
       headers: {
         Authorization: `Token ${token}`,
         "Content-Type": "multipart/form-data",
@@ -70,7 +69,7 @@ export const createStock = async (data: Stock) => {
       formData.append("keywords", keyword);  
     });
 
-    const response = await axios.post(`${BASE_URL}/contributor/stock/`, formData, {
+    const response = await axios.post(`${baseAPI}/contributor/stock/`, formData, {
       headers: {
         Authorization: `Token ${token}`,
         "Content-Type": "multipart/form-data",
@@ -94,7 +93,7 @@ export const draftToStock = async (data: Stock) => {
       throw new Error("Authentication token is missing.");
     }
 
-    const response = await axios.post(`${BASE_URL}/contributor/draft_to_stock/`, data, {
+    const response = await axios.post(`${baseAPI}/contributor/draft_to_stock/`, data, {
       headers: {
         Authorization: `Token ${token}`,
         "Content-Type": "application/json",

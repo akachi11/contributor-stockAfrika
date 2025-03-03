@@ -63,7 +63,7 @@ export default function EditModal({
       axios.get(`https://api.datamuse.com/words?sp=*${inputValue}*&max=7`)
         .then(response => {
           const singleWordSuggestions = response.data
-            .map((item: any) => item.word)
+            .map((item: { word: string }) => item.word)
             .filter((word: string) => !word.includes(' '));
           setSuggestions(singleWordSuggestions);
         })
@@ -104,7 +104,7 @@ export default function EditModal({
       axios.get(`https://api.datamuse.com/words?ml=${namePart}&max=20`)
         .then(response => {
           const singleWordSuggestions = response.data
-            .map((item: any) => item.word)
+            .map((item: { word: string }) => item.word)
             .filter((word: string) => !word.includes(' '));
 
           const shuffledSuggestions = singleWordSuggestions.sort(() => 0.5 - Math.random());

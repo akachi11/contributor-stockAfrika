@@ -13,6 +13,7 @@ import { saveDraft, createStock, draftToStock } from "./action";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import { toast } from "react-toastify";
 import { Stock } from "../../types";
+import { baseAPI } from "../../utils/apiUrls";
 
 type ActiveEditedObject = {
   name?: string;
@@ -184,7 +185,7 @@ export default function UploadDashboard() {
     try {
       const token = getToken();
       const response = await axios.get(
-        `http://127.0.0.1:8000/contributor/drafts/`,
+        `${baseAPI}/contributor/drafts/`,
         {
           headers: {
             Authorization: `Token ${token}`,

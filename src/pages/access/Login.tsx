@@ -5,6 +5,7 @@ import Input from "../../components/Input";
 import { useState } from "react";
 import { setUserSession } from "../../services/AuthServices";
 import axios, { AxiosError } from "axios";
+import { baseAPI } from "../../utils/apiUrls";
 
 interface LoginState {
   email: string;
@@ -48,7 +49,7 @@ export default function Login() {
       const credentialEncoding = btoa(`${payload.email}:${payload.password}`);
       console.log(credentialEncoding)
       const response = await axios.post(
-        `http://127.0.0.1:8000/user/contributor_login/`,
+        `${baseAPI}/user/contributor_login/`,
         {},
         {
           headers: {
@@ -93,7 +94,7 @@ export default function Login() {
 
   const getUser = async (token: string): Promise<User> => {
     const response = await axios.get(
-      `http://127.0.0.1:8000/user/contributor_profile/`,
+      `${baseAPI}/user/contributor_profile/`,
       {
         headers: {
           Authorization: `Token ${token}`,
@@ -159,9 +160,8 @@ export default function Login() {
           <button
             disabled={emptyInputs()}
             onClick={handleLogin}
-            className={`${
-              emptyInputs() ? "bg-gray-400" : "bg-accent border"
-            } mt-5 border-white text-white font-bold lg:text-sm text-[10px] rounded-full lg:px-6 py-3 px-3 w-full flex items-center justify-center gap-2`}
+            className={`${emptyInputs() ? "bg-gray-400" : "bg-accent border"
+              } mt-5 border-white text-white font-bold lg:text-sm text-[10px] rounded-full lg:px-6 py-3 px-3 w-full flex items-center justify-center gap-2`}
           >
             Log In
             {loginStatus && (

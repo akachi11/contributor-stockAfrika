@@ -1,5 +1,4 @@
 import { FaChartBar } from "react-icons/fa";
-import { IoIosArrowRoundForward } from "react-icons/io";
 import { RiHistoryLine } from "react-icons/ri";
 import { RxOpenInNewWindow } from "react-icons/rx";
 import { TfiWallet } from "react-icons/tfi";

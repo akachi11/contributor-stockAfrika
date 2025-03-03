@@ -1,5 +1,4 @@
 import axios from "axios";
-import { returnErrorMessage } from "../../utils/errorManager";
 import { getToken } from "../../services/AuthServices";
 import { Stock } from "../../types";
 
@@ -41,7 +40,7 @@ export const saveDraft = async (data: Stock) => {
   } catch (error) {
     return {
       status: "error",
-      message: returnErrorMessage(error),
+      message: error,
     };
   }
 };
@@ -82,7 +81,7 @@ export const createStock = async (data: Stock) => {
   } catch (error) {
     return {
       status: "error",
-      message: returnErrorMessage(error),
+      message: error,
     };
   }
 };
@@ -106,7 +105,7 @@ export const draftToStock = async (data: Stock) => {
   } catch (error) {
     return {
       status: "error",
-      message: returnErrorMessage(error),
+      message: error,
     };
   }
 };

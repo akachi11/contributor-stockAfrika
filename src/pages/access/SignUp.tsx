@@ -88,7 +88,7 @@ export default function SignUp() {
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
-    const { name, value, type, checked } = e.target;
+    const { name, value, type, checked } = e.target as HTMLInputElement;
     setPayload((prev) => ({
       ...prev,
       [name]: type === "checkbox" ? checked : value,
@@ -199,9 +199,8 @@ export default function SignUp() {
             <button
               disabled={emptyInputs()}
               onClick={handleSignUp}
-              className={`${
-                emptyInputs() ? "bg-gray-400" : "bg-accent border"
-              } mt-5   border-white text-white font-bold lg:text-sm text-[10px] rounded-full lg:px-6 py-3 px-3 w-full flex items-center justify-center gap-2`}
+              className={`${emptyInputs() ? "bg-gray-400" : "bg-accent border"
+                } mt-5   border-white text-white font-bold lg:text-sm text-[10px] rounded-full lg:px-6 py-3 px-3 w-full flex items-center justify-center gap-2`}
             >
               Sign Up
               {signUpMutation.isPending && (

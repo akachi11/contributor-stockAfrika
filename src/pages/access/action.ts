@@ -1,8 +1,7 @@
 import axios from "axios";
-import { returnErrorMessage } from "../../utils/errorManager";
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
-export const signUp = async (data) => {
+export const signUp = async (data: unknown) => {
   try {
     const res = await axios({
       url: `${BASE_URL}/user/contributor_sign_up/`,
@@ -11,6 +10,6 @@ export const signUp = async (data) => {
     });
     return res.data;
   } catch (error) {
-    return { status: "error", message: returnErrorMessage(error) };
+    console.log(error)
   }
 };

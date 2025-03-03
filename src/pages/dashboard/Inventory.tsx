@@ -3,7 +3,6 @@ import { RxOpenInNewWindow } from "react-icons/rx";
 import { FiSearch } from "react-icons/fi";
 import { CiBoxList } from "react-icons/ci";
 import { IoGridOutline } from "react-icons/io5";
-import InventryTableRow from "../../components/dashboard/InventryTableRow";
 import { Link } from "react-router-dom";
 import { GoUpload } from "react-icons/go";
 

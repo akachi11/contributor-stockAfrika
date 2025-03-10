@@ -1,27 +1,28 @@
-import React from "react";
+import { Stock } from "../../types";
 
-const InventoryTableRow: React.FC = () => {
+interface InventoryItemProps {
+  stock: Stock
+  setStock: (stock: Stock) => void
+}
+
+const InventoryTableRow: React.FC<InventoryItemProps> = ({ stock, setStock }) => {
   return (
-    <div>
-      <div className="flex items-center justify-between">
-        <div className="flex items-center lg:gap-5 gap-2">
-          <div className="w-[64px] h-[58px] rounded overflow-hidden">
-            <img
-              className="w-full h-full object-cover"
-              src="https://images.unsplash.com/photo-1512149177596-f817c7ef5d4c?q=80&w=1900&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-              alt="Inventory item"
-            />
-          </div>
-          <div>
-            <p className="font-semibold text-[11px] leading-[14px] mb-2">
-              Children in school
-            </p>
-            <p className="text-[10px] leading-[14px]">#08203094</p>
-          </div>
+    <div onClick={() => { setStock(stock) }} className="p-4 flex flex-col bg-slate-50 hover:bg-slate-200 cursor-pointer rounded-md" title={stock.description}>
+      <div className="flex flex-col items-center gap-3">
+        <div className="w-[100px] h-[100px] cursor-pointer rounded overflow-auto">
+          <img
+            className="w-full h-full object-cover"
+            src={stock.main_file}
+            alt="Inventory item"
+          />
         </div>
-        <p className="hidden lg:block lg:text-xs text-[9px] text-primary_black">13/03/2023</p>
+        <div className="w-[150px] h-[40px] overflow-hidden">
+          <p className="font-semibold text-xs leading-[14px] line-clamp-2">
+            {stock.description}
+          </p>
+          <p className="text-gray-600 text-xs mt-2">13/03/2023</p>
+        </div>
       </div>
-      <div className="w-full h-[1px] bg-[#E9E9E9] my-2"></div>
     </div>
   );
 };

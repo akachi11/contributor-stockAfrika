@@ -6,7 +6,7 @@ import ImageBox from "../../components/upload/FileBox";
 import { uploadedImages } from "../../utils/constants";
 import EditModal from "./EditModal";
 import { useLocation } from "react-router-dom";
-import { getToken } from "../../services/AuthServices";
+import { getToken, getuser } from "../../services/AuthServices";
 import axios from "axios";
 import { useMutation } from "@tanstack/react-query";
 import { saveDraft, createStock, draftToStock } from "./action";
@@ -14,6 +14,8 @@ import LoadingSpinner from "../../components/LoadingSpinner";
 import { toast } from "react-toastify";
 import { Stock } from "../../types";
 import { baseAPI } from "../../utils/apiUrls";
+import InventoryTableRow from "../../components/dashboard/InventryTableRow";
+import { FiInfo, FiX } from "react-icons/fi";
 
 type ActiveEditedObject = {
   name?: string;
@@ -88,6 +90,41 @@ export default function UploadDashboard() {
     releaseForm: [],
     imgUrl: "",
   });
+  const [myStocks, setMyStocks] = useState<Stock[]>()
+  const [fetchingStocks, setFetchingStocks] = useState<boolean>(false)
+  const [activeStock, setActiveStock] = useState<Stock>();
+  const [stockModal, setStockModal] = useState<boolean>(false)
+
+  const user = getuser().user;
+
+  const toggleStock = (stock?: Stock) => {
+    if (stock) {
+      setActiveStock(stock)
+    }
+
+    setStockModal(true)
+  }
+
+  const getMyStocks = async () => {
+    setFetchingStocks(true)
+    try {
+      const token = getToken();
+      const response = await axios.get(
+        // `${baseAPI}/contributor/drafts/`,
+        `${baseAPI}/contributor/my-stocks/${user.id}`,
+        {
+          headers: {
+            Authorization: `Token ${token}`,
+          },
+        }
+      );
+      setFetchingStocks(false)
+      setMyStocks(response.data)
+    } catch (error) {
+      setFetchingStocks(false)
+      console.log(error);
+    }
+  };
 
   const showError = (message: string) => {
     setErrorMessage(message);
@@ -119,7 +156,6 @@ export default function UploadDashboard() {
   const { imageUrl } = location.state || {};
 
   const handleImageSelect = async (file: ImageObject) => {
-    // console.log(file);
     if (
       activeEditedObject &&
       (activeEditedObject as FileObject).id === file.id
@@ -192,7 +228,6 @@ export default function UploadDashboard() {
           },
         }
       );
-      console.log(response.data)
       setFetchedCollections(response?.data);
     } catch (error) {
       console.log(error);
@@ -202,7 +237,6 @@ export default function UploadDashboard() {
   const saveDraftMutation = useMutation({
     mutationFn: saveDraft,
     onSuccess: (data) => {
-      console.log(data)
       fetchCollections();
       setToggleEditMode(false);
       if (data?.status === "error") {
@@ -214,7 +248,6 @@ export default function UploadDashboard() {
   const createStockMutation = useMutation({
     mutationFn: createStock,
     onSuccess: (data) => {
-      console.log(data);
       fetchCollections();
       setToggleEditMode(false);
       if (data?.status === "error") {
@@ -226,7 +259,6 @@ export default function UploadDashboard() {
   const createDraftToStockMutation = useMutation({
     mutationFn: draftToStock,
     onSuccess: (data) => {
-      console.log(data);
       fetchCollections();
       setToggleEditMode(false);
       if (data?.status === "error") {
@@ -290,6 +322,12 @@ export default function UploadDashboard() {
   useEffect(() => {
     fetchCollections();
   }, []);
+
+  useEffect(() => {
+    if (tab === 2) {
+      getMyStocks()
+    }
+  }, [tab])
 
   return (
     <main className="lg:pt-0 pt-[100px] relative">
@@ -367,7 +405,7 @@ export default function UploadDashboard() {
       </div>
       <div
         className={`${toggleEditMode ? "w-[75%]" : "w-full "
-          } min-h-[600px]  duration-300 transition-all ease-linear`}
+          } duration-300 transition-all ease-linear`}
       >
         {tab === 0 && (
           <div className="relative">
@@ -434,14 +472,25 @@ export default function UploadDashboard() {
           </div>
         )}
         {tab === 2 && (
-          <div>
-            {data.length === 0 ? (
-              <div className="grid justify-center mt-40">
-                <UploadEmptyState heading="You currently have no Submitted content" />
-              </div>
-            ) : (
-              <div>edit here</div>
-            )}
+          <div
+            // className={`${
+            //   layout === "grid" ? "grid grid-cols-2 gap-5" : ""
+            // } overflow-y-scroll h-full pb-[85px] pr-5 duration-200 transition-all ease-linear`}
+            className="text-center"
+          >
+            {fetchingStocks ?
+              <LoadingSpinner />
+              : myStocks?.length === 0 ? (
+                <div className="grid justify-center mt-40">
+                  <UploadEmptyState heading="You currently have no Submitted content" />
+                </div>
+              ) :
+                <div className="grid grid-cols-[repeat(auto-fit,minmax(150px,max-content))] p-4 justify-start gap-4">
+                  {myStocks?.map((stock, i) => (
+                    <InventoryTableRow setStock={toggleStock} stock={stock} key={i} />
+                  ))}
+                </div>
+            }
           </div>
         )}
         {tab === 3 && (
@@ -482,6 +531,59 @@ export default function UploadDashboard() {
           )}
         </div>
       </div>
+
+      {stockModal &&
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white p-6 relative rounded-lg shadow-lg mt-4 w-[90%] lg:w-[65%] max-h-[70%] overflow-auto">
+            <div onClick={() => setStockModal(false)} className="absolute top-4 right-4 cursor-pointer text-black">
+              <FiX size={20} />
+            </div>
+            <div className="flex flex-col lg:flex-row lg:gap-8 lg:items-center">
+              <div className="flex-[2]">
+                <h2 className="text-lg font-semibold mb-1">{activeStock?.description}</h2>
+
+                <p className="text-xs mb-2">#{activeStock?.stock_id}</p>
+
+                <img src={activeStock?.main_file} className="w-full bg-neutral-200 h-[400px] bg-red object-contain" alt="" />
+              </div>
+              <div className="flex-[1] mt-4 flex flex-col gap-4">
+                <div className="flex gap-8">
+                  <div>
+                    <p className="font-semibold text-sm flex items-center gap-1">File Type <FiInfo /></p>
+                    <p className="mt-2 text-xs font-light bg-neutral-100 border-neutral-200 text-center text-neutral-500 border-[1px] rounded-md">{activeStock?.type}</p>
+                  </div>
+                  <div>
+                    <p className="font-semibold text-sm flex items-center gap-1">Usage Type <FiInfo /></p>
+                    <p className="mt-2 text-xs font-light bg-neutral-100 border-neutral-200 text-center text-neutral-500 border-[1px] rounded-md">Commercial</p>
+                  </div>
+                </div>
+
+                <div>
+                  <p className="font-semibold text-sm flex items-center gap-1">Keywords <FiInfo /></p>
+
+                  <div className="mt-2 flex gap-2 flex-wrap">
+                    {activeStock?.keywords?.map((keyword, i) => (
+                      <p key={i} className="text-xs bg-neutral-100 text-neutral-500 px-2 py-1 rounded-md">{keyword}</p>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <input type="checkbox" disabled checked={activeStock?.matured_content} />
+                  <p className="text-xs text-neutral-500">Mature Content</p>
+                </div>
+
+                <div>
+                  <p className="font-semibold flex items-center gap-2">Release form <FiInfo /></p>
+
+                  <a className="text-xs text-accent" href={activeStock?.main_file}>Release form</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+
     </main>
   );
 }

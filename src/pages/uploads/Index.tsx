@@ -39,7 +39,7 @@ export default function Uploads() {
   };
 
   return (
-    <main className="lg:px-7 px-5 lg:pt-9 pt-[120px] pb-9 flex lg:flex-row flex-col gap-5 font-inter">
+    <main className="lg:px-7 px-5 lg:pt-9 h-full pt-[120px] pb-9 flex lg:flex-row flex-col gap-5 font-inter">
       <div className="flex-1 bg-[#F2F2F2] rounded grid place-items-center py-10 px-5">
         <div className="flex-1 flex flex-col items-center lg:w-[510px] w-full">
           <div className="lg:w-[454px] w-full">

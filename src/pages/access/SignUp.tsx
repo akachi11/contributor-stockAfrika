@@ -59,7 +59,6 @@ export default function SignUp() {
   const signUpMutation = useMutation<SignUpResponse, Error, SignUpPayload>({
     mutationFn: signUp,
     onSuccess: (data) => {
-      console.log(data);
       if (data?.status === "error") {
         setErrorMessage(data.message.email[0]);
       } else {
@@ -97,7 +96,7 @@ export default function SignUp() {
 
   return (
     <main
-      className="w-full lg:h-[1024px] h-screen py-10 lg:py-0 flex flex-col"
+      className="w-full h-screen py-10 lg:py-0 flex flex-col"
       style={{
         background: `url(${bg})`,
         backgroundSize: "cover",

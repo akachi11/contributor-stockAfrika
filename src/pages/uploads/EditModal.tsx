@@ -48,8 +48,6 @@ export default function EditModal({
   const [keywords, setKeywords] = useState<string[]>(data.keywords!);
   const inputRef = useRef<HTMLInputElement | null>(null);
 
-  console.log(data.keywords)
-
   useEffect(() => {
     if (editing && inputRef.current) {
       const length = inputRef.current.value.length;

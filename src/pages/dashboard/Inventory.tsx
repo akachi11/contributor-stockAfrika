@@ -1,16 +1,56 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { RxOpenInNewWindow } from "react-icons/rx";
-import { FiSearch } from "react-icons/fi";
-import { CiBoxList } from "react-icons/ci";
-import { IoGridOutline } from "react-icons/io5";
+import { FiInfo, FiSearch, FiX } from "react-icons/fi";
 import { Link } from "react-router-dom";
 import { GoUpload } from "react-icons/go";
-
-type LayoutType = "list" | "grid";
+import { getToken, getuser } from "../../services/AuthServices";
+import axios from "axios";
+import { Stock } from "../../types";
+import InventoryTableRow from "../../components/dashboard/InventryTableRow";
+import LoadingSpinner from "../../components/LoadingSpinner";
+import { baseAPI } from "../../utils/apiUrls";
 
 export default function Inventory() {
   const [tab, setTab] = useState<number>(0);
-  const [layout, setLayout] = useState<LayoutType>("list");
+  const [myStocks, setMyStocks] = useState<Stock[]>([])
+  const [fetchingStocks, setFetchingStocks] = useState<boolean>(false)
+  const [activeStock, setActiveStock] = useState<Stock>();
+  const [stockModal, setStockModal] = useState<boolean>(false)
+
+  const toggleStock = (stock?: Stock) => {
+    if (stock) {
+      setActiveStock(stock)
+    }
+
+    setStockModal(true)
+  }
+
+  const user = getuser().user
+
+  const getMyStocks = async () => {
+    setFetchingStocks(true)
+    try {
+      const token = getToken();
+      const response = await axios.get(
+        // `${baseAPI}/contributor/drafts/`,
+        `${baseAPI}/contributor/approved-stocks/${user.id}`,
+        {
+          headers: {
+            Authorization: `Token ${token}`,
+          },
+        }
+      );
+      setFetchingStocks(false)
+      setMyStocks(response.data)
+    } catch (error) {
+      setFetchingStocks(false)
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    getMyStocks()
+  }, [])
 
   return (
     <section className="lg:h-[401px] flex lg:flex-row flex-col-reverse gap-5">
@@ -85,19 +125,8 @@ export default function Inventory() {
         </div>
         <div className="bg-primary_black w-full h-[1px] mb-5"></div>
         <div className="flex items-center justify-between mb-3">
-          {/* sort by */}
-          <div className="flex items-center text-[8px]">
-            <p className="text-[#535353]">Sort by :</p>
-            <select
-              name="sort"
-              id="sort"
-              className="font-medium outline-none border-none"
-            >
-              <option value="last-added">Last Added</option>
-            </select>
-          </div>
           {/* layout */}
-          <div className="flex items-center text-[8px]">
+          {/* <div className="flex items-center text-[8px]">
             <p className="text-[#535353]">Layout : &nbsp;</p>
             <div className="flex gap-1">
               <button
@@ -115,25 +144,31 @@ export default function Inventory() {
                 <CiBoxList size={15} />
               </button>
             </div>
-          </div>
+          </div> */}
         </div>
         {/* table */}
         <div
-          // className={`${
-          //   layout === "grid" ? "grid grid-cols-2 gap-5" : ""
-          // } overflow-y-scroll h-full pb-[85px] pr-5 duration-200 transition-all ease-linear`}
           className="text-center"
         >
-          {/* {Array.from({ length: 20 }, (_, i) => (
-            <InventryTableRow key={i} />
-          ))} */}
-          No assets in inventory
-          <button className="outline-none rounded-full border border-black m-auto mt-2 flex items-center px-3 py-1 gap-1">
-            <GoUpload size={20} />
-            <Link to={"/uploads"}>
-              <p className="font-medium text-[15px]">Upload</p>
-            </Link>
-          </button>
+          {fetchingStocks ?
+            <LoadingSpinner />
+            : myStocks.length > 0 ?
+              <div className="grid grid-cols-[repeat(auto-fit,minmax(150px,max-content))] justify-start gap-4">
+                {myStocks.map((stock, i) => (
+                  <InventoryTableRow setStock={toggleStock} stock={stock} key={i} />
+                ))}
+              </div>
+              :
+              (<>
+                No assets in inventory
+                <button className="outline-none rounded-full border border-black m-auto mt-2 flex items-center px-3 py-1 gap-1">
+                  <GoUpload size={20} />
+                  <Link to={"/uploads"}>
+                    <p className="font-medium text-[15px]">Upload</p>
+                  </Link>
+                </button>
+              </>)
+          }
         </div>
       </div>
       <div
@@ -154,6 +189,59 @@ export default function Inventory() {
         </div>
         <div className="absolute bg-[#00000051] top-0 bottom-0 left-0 ring-0 w-full h-full"></div>
       </div>
+
+      {stockModal &&
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white p-6 relative rounded-lg shadow-lg mt-4 w-[90%] lg:w-[65%] max-h-[70%] overflow-auto">
+            <div onClick={() => setStockModal(false)} className="absolute top-4 right-4 cursor-pointer text-black">
+              <FiX size={20} />
+            </div>
+            <div className="flex flex-col lg:flex-row lg:gap-8 lg:items-center">
+              <div className="flex-[2]">
+                <h2 className="text-lg font-semibold mb-1">{activeStock?.description}</h2>
+
+                <p className="text-xs mb-2">#{activeStock?.stock_id}</p>
+
+                <img src={activeStock?.main_file} className="w-full bg-neutral-200 h-[400px] bg-red object-contain" alt="" />
+              </div>
+              <div className="flex-[1] mt-4 flex flex-col gap-4">
+                <div className="flex gap-8">
+                  <div>
+                    <p className="font-semibold text-sm flex items-center gap-1">File Type <FiInfo /></p>
+                    <p className="mt-2 text-xs font-light bg-neutral-100 border-neutral-200 text-center text-neutral-500 border-[1px] rounded-md">{activeStock?.type}</p>
+                  </div>
+                  <div>
+                    <p className="font-semibold text-sm flex items-center gap-1">Usage Type <FiInfo /></p>
+                    <p className="mt-2 text-xs font-light bg-neutral-100 border-neutral-200 text-center text-neutral-500 border-[1px] rounded-md">Commercial</p>
+                  </div>
+                </div>
+
+                <div>
+                  <p className="font-semibold text-sm flex items-center gap-1">Keywords <FiInfo /></p>
+
+                  <div className="mt-2 flex gap-2 flex-wrap">
+                    {activeStock?.keywords?.map((keyword, i) => (
+                      <p key={i} className="text-xs bg-neutral-100 text-neutral-500 px-2 py-1 rounded-md">{keyword}</p>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <input type="checkbox" disabled checked={activeStock?.matured_content} />
+                  <p className="text-xs text-neutral-500">Mature Content</p>
+                </div>
+
+                <div>
+                  <p className="font-semibold flex items-center gap-2">Release form <FiInfo /></p>
+
+                  <a className="text-xs text-accent" href={activeStock?.main_file}>Release form</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+
     </section>
   );
 }

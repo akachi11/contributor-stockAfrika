@@ -2,7 +2,8 @@ import { useMutation } from "@tanstack/react-query";
 import { editProfile } from "./action";
 import { CiEdit } from "react-icons/ci";
 import ProfileInput from "../../components/ProfileInput";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
+import { getuser } from "../../services/AuthServices";
 
 interface Payload {
   full_name: string;
@@ -29,6 +30,8 @@ export default function Profile() {
     is_contirbutor: true,
   });
 
+  const user = getuser().user
+
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
@@ -44,8 +47,6 @@ export default function Profile() {
     onSuccess: (data) => {
       if (data?.status === "error") {
         setErrorMessage(data.message.email[0]);
-      } else {
-        console.log(data);
       }
     },
   });
@@ -55,6 +56,18 @@ export default function Profile() {
   const handleEditProfile = () => {
     editProfileMutation.mutate(payload);
   };
+
+
+  useEffect(() => {
+    setPayload({
+      full_name: user.full_name,
+      user_id: user.id,
+      username: user.username,
+      email: user.email,
+      is_contirbutor: true,
+
+    })
+  }, [user])
 
   return (
     <main className="lg:pl-7 lg:pr-[91px] lg:px-0 px-5 lg:pt-9 pt-[120px] relative font-inter">
@@ -78,7 +91,7 @@ export default function Profile() {
                 type="text"
                 name="full_name"
                 label="Full name"
-                placeholder="Amaka Ezeani"
+                placeholder={user.full_name}
               />
               <ProfileInput
                 handleChange={handleChange}
@@ -86,7 +99,7 @@ export default function Profile() {
                 type="text"
                 name="user_id"
                 label="User ID"
-                placeholder="2496908"
+                placeholder={user.id}
               />
               <ProfileInput
                 handleChange={handleChange}
@@ -94,7 +107,7 @@ export default function Profile() {
                 type="text"
                 name="username"
                 label="Username"
-                placeholder="AmyPixels"
+                placeholder={user.username}
               />
               <ProfileInput
                 handleChange={handleChange}
@@ -102,7 +115,7 @@ export default function Profile() {
                 type="email"
                 name="email"
                 label="Email"
-                placeholder="johndoe@email.com"
+                placeholder={user.email}
               />
             </div>
             <button

@@ -47,7 +47,6 @@ export default function Login() {
     try {
       setLoginStatus(true);
       const credentialEncoding = btoa(`${payload.email}:${payload.password}`);
-      console.log(credentialEncoding)
       const response = await axios.post(
         `${baseAPI}/user/contributor_login/`,
         {},
@@ -57,8 +56,6 @@ export default function Login() {
           },
         }
       );
-
-      console.log(response)
 
       const token = response.data.token;
       const user = await getUser(token);
@@ -94,6 +91,7 @@ export default function Login() {
 
   const getUser = async (token: string): Promise<User> => {
     const response = await axios.get(
+      // `${baseAPI}/user/contributor_profile/`,
       `${baseAPI}/user/contributor_profile/`,
       {
         headers: {
@@ -101,12 +99,13 @@ export default function Login() {
         },
       }
     );
+    console.log(response.data)
     return response.data;
   };
 
   return (
     <main
-      className="w-full h-[1024px] flex flex-col"
+      className="w-full h-screen flex flex-col"
       style={{
         background: `url(${bg})`,
         backgroundSize: "cover",

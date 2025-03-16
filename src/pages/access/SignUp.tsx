@@ -1,4 +1,4 @@
-import { Link, useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import bg from "../../assets/accessbg.jpg";
 import logo from "../../assets/mainlogo.png";
 import Input from "../../components/Input";
@@ -45,7 +45,6 @@ export default function SignUp() {
     consent: false,
     web_domain: window.location.origin,
   });
-  const { id } = useParams<{ id: string }>();
 
   console.log(getuser())
 

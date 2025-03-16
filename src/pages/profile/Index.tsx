@@ -32,6 +32,8 @@ export default function Profile() {
 
   const user = getuser().user
 
+  console.log(user)
+
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {

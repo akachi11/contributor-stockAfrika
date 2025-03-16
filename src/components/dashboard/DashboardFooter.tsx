@@ -8,7 +8,7 @@ import React from "react";
 const DashboardFooter: React.FC = () => {
   const date = new Date();
   return (
-    <div className="py-[32px] fixed w-full z-0 right-0 bottom-0 ml-[244px] bg-primary_black text-[#B0B0B0] font-open_sauce">
+    <div className="py-[32px] z-10 right-0 bottom-0 ml-[244px] bg-primary_black text-[#B0B0B0] font-open_sauce">
       <div className="flex flex-wrap lg:justify-end justify-center px-8 items-center gap-5">
         <div className="w-[115px] h-[15px] overflow-hidden">
           <img className="w-full h-full" src={logo} alt="Logo" />

@@ -53,7 +53,7 @@ const SideBar: React.FC = () => {
   ];
 
   return (
-    <div className="h-screen fixed overflow-y-hidden z-10 hidden w-[244px] bg-accent font-inter text-white lg:flex flex-col pb-[80px]">
+    <div className="h-screen fixed overflow-y-hidden z-20 hidden w-[244px] bg-accent font-inter text-white lg:flex flex-col pb-[80px]">
       <div className="h-full">
         <div className="h-full">
           <div className="grid justify-center pt-[45px] w-full">

@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import bg from "../../assets/accessbg.jpg";
 import logo from "../../assets/mainlogo.png";
 import Input from "../../components/Input";
@@ -6,6 +6,7 @@ import { countries } from "../../utils/constants";
 import { useState, ChangeEvent } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { signUp } from "./action";
+import { getuser } from "../../services/AuthServices";
 
 // Define the types for the payload
 interface SignUpPayload {
@@ -44,6 +45,9 @@ export default function SignUp() {
     consent: false,
     web_domain: window.location.origin,
   });
+  const { id } = useParams<{ id: string }>();
+
+  console.log(getuser())
 
   const emptyInputs = (): boolean => {
     return !payload.full_name ||

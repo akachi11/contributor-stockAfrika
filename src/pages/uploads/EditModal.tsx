@@ -129,7 +129,7 @@ export default function EditModal({
   };
 
   return (
-    <div className="h-screen">
+    <div className="h-screen pt-16">
       <div className="bg-white px-[30px] pt-[30px] pb-[100px] grid gap-10 overflow-y-scroll">
         <div className="flex gap-2 items-center">
           <div className="w-[80px] h-[80px]">

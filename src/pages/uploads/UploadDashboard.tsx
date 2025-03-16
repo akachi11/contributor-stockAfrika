@@ -67,6 +67,10 @@ type UploadedImage = {
 };
 
 export default function UploadDashboard() {
+  const location = useLocation();
+
+  const { imageUrl } = location.state || {};
+
   const [data] = useState<UploadedImage[]>(uploadedImages);
   const [tab, setTab] = useState<number>(0);
   const [toggleEditMode, setToggleEditMode] = useState<boolean>(false);
@@ -94,8 +98,11 @@ export default function UploadDashboard() {
   const [fetchingStocks, setFetchingStocks] = useState<boolean>(false)
   const [activeStock, setActiveStock] = useState<Stock>();
   const [stockModal, setStockModal] = useState<boolean>(false)
+  const [imageUrls, setImageUrls] = useState<ImageObject[]>(imageUrl);
 
   const user = getuser().user;
+
+  console.log(imageUrls,)
 
   const toggleStock = (stock?: Stock) => {
     if (stock) {
@@ -152,9 +159,6 @@ export default function UploadDashboard() {
     }
   };
 
-  const location = useLocation();
-  const { imageUrl } = location.state || {};
-
   const handleImageSelect = async (file: ImageObject) => {
     if (
       activeEditedObject &&
@@ -177,7 +181,7 @@ export default function UploadDashboard() {
       let selectedFile: ImageObject | undefined;
 
       if (file.imgUrl && file.imgUrl.startsWith("blob:")) {
-        selectedFile = imageUrl.find(
+        selectedFile = imageUrls.find(
           (image: ImageObject) => image.id === file.id
         );
         if (selectedFile) {
@@ -268,6 +272,7 @@ export default function UploadDashboard() {
   });
 
   const handleSaveDraft = (object: ActiveEditedObject) => {
+    setImageUrls(prevImageUrls => prevImageUrls.filter(img => img.imgUrl !== object.imgUrl));
     setErrorMessage("");
     if (!object.main_file || !object.keywords) {
       showError("Keywords are required!");
@@ -284,6 +289,7 @@ export default function UploadDashboard() {
   };
 
   const handleCreateStock = (object: ActiveEditedObject) => {
+    setImageUrls(prevImageUrls => prevImageUrls.filter(img => img.imgUrl !== object.imgUrl));
     setErrorMessage("");
     if (!object.main_file || !object.keywords) {
       showError("Keywords are required!");
@@ -301,6 +307,7 @@ export default function UploadDashboard() {
   };
 
   const handleDraftToStock = (object: ImageObject) => {
+    setImageUrls(prevImageUrls => prevImageUrls.filter(img => img.imgUrl !== object.imgUrl));
     setErrorMessage("");
     if (!object.main_file || !object.keywords) {
       showError("Keywords are required!");
@@ -330,7 +337,7 @@ export default function UploadDashboard() {
   }, [tab])
 
   return (
-    <main className="lg:pt-0 pt-[100px] relative">
+    <main className="lg:pt-0 pt-[100px] h-[90vh] scroll overflow-x-hidden relative">
       <div className="bg-white lg:px-14 px-5 w-full flex justify-between">
         <div className="flex gap-6 w-full">
           <button
@@ -420,7 +427,7 @@ export default function UploadDashboard() {
                 </p>
 
                 <div className="flex gap-5 flex-wrap ease-linear duration-200 transition-all">
-                  {imageUrl?.map((img: ImageObject) => (
+                  {imageUrls?.map((img: ImageObject) => (
                     <ImageBox
                       handleSelectFile={() => handleImageSelect(img)}
                       active={activeEditedObject}
@@ -507,7 +514,7 @@ export default function UploadDashboard() {
       </div>
       <div
         className={`${toggleEditMode ? "translate-x-0" : "translate-x-[500px]"
-          } absolute h-full bg-white w-[35%] top-[53px] right-0 duration-300 transition-all ease-linear`}
+          } absolute h-[90vh] overflow-y-scroll bg-white w-[35%] top-[53px] right-0 duration-300 transition-all ease-linear`}
       >
         <div className="">
           {Object.entries(activeEditedObject).length === 0 ? (

@@ -5,10 +5,10 @@ import SideBar from "../components/dashboard/SideBar";
 
 const Layout: React.FC = () => {
   return (
-    <div className="font-open_sauce min-h-screen pb-[70px]">
+    <div className="font-open_sauce min-h-screen">
       <div className="flex h-screen flex-row"> {/* h-screen */}
         <SideBar />
-        <div className="flex-1 bg-background overflow-hidden ml-[244px]">
+        <div className="flex-1 bg-background pb-[100px] overflow-hidden ml-[244px]">
           <DashboardNavbar />
           <div className="overflow-y-scroll h-full pb-[40px]">
             <Outlet />

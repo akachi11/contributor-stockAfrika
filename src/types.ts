@@ -20,5 +20,6 @@ export type Stock = {
     user?: number;
     usageType?: string;
     draft_id?: number;
-    matured_content?: boolean
+    matured_content?: boolean,
+    thumbnail?: string
 }

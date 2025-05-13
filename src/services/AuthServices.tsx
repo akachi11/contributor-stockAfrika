@@ -1,7 +1,7 @@
 export const setUserSession = (user: unknown, token: string) => {
   if (user && token) {
     localStorage.setItem("user", JSON.stringify(user));
-    localStorage.setItem("token", token);
+    localStorage.setItem("SA-token", token);
   }
 };
 
@@ -19,11 +19,11 @@ export const getuser = () => {
 };
 
 export const getToken = () => {
-  return localStorage.getItem("token");
+  return localStorage.getItem("SA-token");
 };
 
 export const resetUserSession = () => {
   localStorage.removeItem("user");
-  localStorage.removeItem("token");
+  localStorage.removeItem("SA-token");
   window.location.reload();
 };

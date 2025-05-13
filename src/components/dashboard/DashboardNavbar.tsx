@@ -38,6 +38,7 @@ const DashboardNavbar: React.FC = () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [profile]);
+
   return (
     <div className="bg-primary_black lg:px-9 px-5 h-[98px] text-white flex items-center justify-between fixed lg:relative w-full z-50">
       <div className="lg:hidden">

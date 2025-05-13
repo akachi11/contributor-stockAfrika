@@ -9,6 +9,8 @@ import { Stock } from "../../types";
 import InventoryTableRow from "../../components/dashboard/InventryTableRow";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import { baseAPI } from "../../utils/apiUrls";
+import { LazyLoadImage } from "react-lazy-load-image-component";
+import "react-lazy-load-image-component/src/effects/blur.css";
 
 export default function Inventory() {
   const [tab, setTab] = useState<number>(0);
@@ -25,7 +27,7 @@ export default function Inventory() {
     setStockModal(true)
   }
 
-  const user = getuser().user
+  const user = getuser()?.user
 
   const getMyStocks = async () => {
     setFetchingStocks(true)
@@ -33,7 +35,7 @@ export default function Inventory() {
       const token = getToken();
       const response = await axios.get(
         // `${baseAPI}/contributor/drafts/`,
-        `${baseAPI}/contributor/approved-stocks/${user.id}`,
+        `${baseAPI}/contributor/approved-stocks/${user?.id}`,
         {
           headers: {
             Authorization: `Token ${token}`,
@@ -53,8 +55,8 @@ export default function Inventory() {
   }, [])
 
   return (
-    <section className="lg:h-[401px] flex lg:flex-row flex-col-reverse gap-5">
-      <div className="lg:w-[80%] h-[457px] lg:h-auto w-full bg-white rounded-3xl overflow-hidden shadow py-9 lg:px-8 px-4">
+    <section className="flex lg:flex-row flex-col-reverse gap-5">
+      <div className="lg:w-[80%] h-[1000px] w-full bg-white rounded-3xl overflow-y-scroll shadow py-9 lg:px-8 px-4">
         <div className="flex items-center justify-between mb-5 lg:mb-0">
           <div className="flex items-center lg:gap-2">
             <p className="text-[15px] font-bold leading-[18px]">My Inventory</p>
@@ -202,7 +204,7 @@ export default function Inventory() {
 
                 <p className="text-xs mb-2">#{activeStock?.stock_id}</p>
 
-                <img src={activeStock?.main_file} className="w-full bg-neutral-200 h-[400px] bg-red object-contain" alt="" />
+                <LazyLoadImage src={activeStock?.main_file} effect="blur" className="w-full bg-neutral-200 h-[400px] bg-red object-contain" alt="" />
               </div>
               <div className="flex-[1] mt-4 flex flex-col gap-4">
                 <div className="flex gap-8">

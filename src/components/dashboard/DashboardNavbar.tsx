@@ -2,7 +2,7 @@ import { CiUser } from "react-icons/ci";
 import logo from "../../assets/logo.png";
 import { IoMenu } from "react-icons/io5";
 import { GoUpload } from "react-icons/go";
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { IoIosLogOut } from "react-icons/io";
 import { Link, useLocation } from "react-router-dom";
 import { getuser, resetUserSession } from "../../services/AuthServices";

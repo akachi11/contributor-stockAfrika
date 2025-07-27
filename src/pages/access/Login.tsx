@@ -25,6 +25,8 @@ export default function Login() {
   const [loginStatus, setLoginStatus] = useState<boolean>(false);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [errorMessage, setErrorMessage] = useState<string>("");
+  const [isModel, setIsModel] = useState<boolean>(false);
+
   const [payload, setPayload] = useState<LoginState>({
     email: "",
     password: "",
@@ -58,7 +60,7 @@ export default function Login() {
       );
 
       const token = response.data.token;
-      const user = await getUser(token);
+      const user = await getUser(token, isModel);
 
       setUserSession(user, token);
 
@@ -89,23 +91,21 @@ export default function Login() {
     }
   };
 
-  const getUser = async (token: string): Promise<User> => {
+  const getUser = async (token: string, isModel?: boolean): Promise<User> => {
     const response = await axios.get(
-      // `${baseAPI}/user/contributor_profile/`,
-      `${baseAPI}/user/contributor_profile/`,
+      `${baseAPI}/user/${isModel ? "model_profile" : "contributor_profile"}/`,
       {
         headers: {
           Authorization: `Token ${token}`,
         },
       }
     );
-    console.log(response.data)
     return response.data;
   };
 
   return (
     <main
-      className="w-full h-screen flex flex-col"
+      className="w-full min-h-screen flex py-10 flex-col"
       style={{
         background: `url(${bg})`,
         backgroundSize: "cover",
@@ -147,6 +147,19 @@ export default function Login() {
               value={payload.password}
               handleChange={handleChange}
             />
+            <div className="flex items-center mt-2 ml-2">
+              <input
+                type="checkbox"
+                id="isModel"
+                checked={isModel}
+                onChange={(e) => setIsModel(e.target.checked)}
+                className="mr-2"
+              />
+              <label htmlFor="isModel" className="text-sm text-gray-800">
+                I am a model
+              </label>
+            </div>
+
           </div>
           <div className="flex justify-end">
             <Link

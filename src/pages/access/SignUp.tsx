@@ -7,6 +7,9 @@ import { useState, ChangeEvent } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { signUp } from "./action";
 import { getuser } from "../../services/AuthServices";
+import { MdOutlinePhotoCamera } from "react-icons/md";
+import { RiUserStarLine } from "react-icons/ri";
+import { SignUpArgs, SignUpResponse } from "../../types";
 
 // Define the types for the payload
 interface SignUpPayload {
@@ -17,13 +20,6 @@ interface SignUpPayload {
   country: string;
   consent: boolean;
   web_domain: string;
-}
-
-interface SignUpResponse {
-  status: "success" | "error";
-  message: {
-    email: string[];
-  };
 }
 
 interface Country {
@@ -45,6 +41,7 @@ export default function SignUp() {
     consent: false,
     web_domain: window.location.origin,
   });
+  const [accountType, setAccountType] = useState<string>("contributor");
 
   console.log(getuser())
 
@@ -59,7 +56,7 @@ export default function SignUp() {
       : false;
   };
 
-  const signUpMutation = useMutation<SignUpResponse, Error, SignUpPayload>({
+  const signUpMutation = useMutation<SignUpResponse, Error, SignUpArgs>({
     mutationFn: signUp,
     onSuccess: (data) => {
       if (data?.status === "error") {
@@ -79,11 +76,16 @@ export default function SignUp() {
     },
   });
 
+
   const handleSignUp = () => {
     if (emptyInputs()) {
       return;
     } else {
-      signUpMutation.mutate(payload);
+      signUpMutation.mutate({
+        data: payload,
+        isModel: accountType === "model",
+      });
+
     }
   };
 
@@ -99,7 +101,7 @@ export default function SignUp() {
 
   return (
     <main
-      className="w-full h-screen py-10 lg:py-0 flex flex-col"
+      className="w-full py-10 flex flex-col"
       style={{
         background: `url(${bg})`,
         backgroundSize: "cover",
@@ -119,7 +121,7 @@ export default function SignUp() {
       </div>
       <div className="flex-1 w-full grid justify-center mt-10 lg:mt-2 relative">
         {registered ? (
-          <div className="w-[358px] absolute top-32 right-1/2 translate-x-1/2 grid place-items-center h-fit bg-[#ffffffb5] px-5 py-[57px] rounded">
+          <div className="w-[358px] absolute top-32 right-1/2 translate-x-1/2 grid place-items-center h-fit bg-[#ffffffb5] px-5 py-[57px] ro unded">
             <p className="text-xl font-open_sauce font-medium text-center">
               Registered successfully, login{" "}
               <Link to="/login" className="text-accent">
@@ -128,7 +130,7 @@ export default function SignUp() {
             </p>
           </div>
         ) : (
-          <div className="w-[358px] h-fit bg-[#ffffffb5] px-5 py-[57px] rounded">
+          <div className="w-[358px] lg:w-[30vw] h-fit bg-[#ffffffb5] px-5 py-[57px] rounded">
             <p className="text-2xl font-open_sauce font-medium text-center mb-[38px]">
               Excited to have you onboard.
             </p>
@@ -161,6 +163,23 @@ export default function SignUp() {
                 value={payload.password}
                 handleChange={handleChange}
               />
+              <div>
+                <p>Join as:</p>
+                <div className="flex items-center justify-center gap-4 mt-2 mb-4">
+                  <div onClick={() => setAccountType("contributor")} className={`cursor-pointer flex flex-col items-center flex-1 ${accountType === "contributor" ? "border-[#884c20] text-[#884c20]" : "border-neutral-400 text-neutral-600"} border-2 py-4 rounded-lg`}>
+                    <div className="text-[3rem]">
+                      <MdOutlinePhotoCamera />
+                    </div>
+                    <p>Contributor</p>
+                  </div>
+                  <div onClick={() => setAccountType("model")} className={`cursor-pointer flex flex-col items-center flex-1 ${accountType === "model" ? "border-[#884c20] text-[#884c20]" : "border-neutral-400 text-neutral-600"} border-2 py-4 rounded-lg`}>
+                    <div className="text-[3rem]">
+                      <RiUserStarLine />
+                    </div>
+                    <p>Model</p>
+                  </div>
+                </div>
+              </div>
               <select
                 name="country"
                 value={payload.country}
